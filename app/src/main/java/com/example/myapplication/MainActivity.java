@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
                 Object obj = inputStream.readObject();
                 printServerLog("데이터 받음: " + obj);
 
+                String message = String.valueOf(obj);
+                notification(message);
+
                 ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
                 outputStream.writeObject(obj + " from server");
                 outputStream.flush();
@@ -110,6 +113,28 @@ public class MainActivity extends AppCompatActivity {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void notification(String message) {
+        String channelId = "message";
+        String channelName = "메시지 알림";
+
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationChannel channel = new NotificationChannel(
+                channelId,
+                channelName,
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        manager.createNotificationChannel(channel);
+
+        NotificationCompat.Builder bulider = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle("새 메시지")
+                .setContentText(message)
+                .setAutoCancel(true);
+
+        manager.notify((int) System.currentTimeMillis(), bulider.build());
     }
 
     public void printClientLog(String data) {
