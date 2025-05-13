@@ -11,7 +11,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     TextView sendText;
     TextView serverText;
     LinearLayout sendLayout;
+    WebView webView;
 
     Handler handler = new Handler();
     @Override
@@ -54,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         sendText = findViewById(R.id.sendText);
         serverText = findViewById(R.id.serverText);
         sendLayout = findViewById(R.id.sendLayout);
+        webView = findViewById(R.id.webView);
 
         Button sendButton = findViewById(R.id.sendButton);
         sendButton.setOnClickListener(v -> {
@@ -62,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     send(data);
+                    handler.post(() -> editText.setText(""));
                 }
             }).start();
         });
@@ -78,6 +83,15 @@ public class MainActivity extends AppCompatActivity {
             startButton.setVisibility(View.GONE);
             sendLayout.setVisibility(View.VISIBLE);
         });
+
+        Button webViewButton = findViewById(R.id.webViewButton);
+        webViewButton.setOnClickListener(v -> {
+            webView.setVisibility(View.VISIBLE);
+
+            webView.setWebViewClient(new WebViewClient());
+            webView.setWebChromeClient(new WebChromeClient());
+            webView.loadUrl("https://www.naver.com/");
+        });
     }
 
     public void send(String data) {
@@ -93,8 +107,6 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             printClientLog("서버로부터 받음: " + reader.readLine());
             socket.close();
-
-            editText.setText("");
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -176,7 +188,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
 }

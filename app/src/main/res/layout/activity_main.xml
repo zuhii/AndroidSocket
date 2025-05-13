@@ -48,7 +48,6 @@
         </ScrollView>
     </LinearLayout>
 
-
         <View
             app:layout_constraintBottom_toBottomOf="@+id/topLayout"
             app:layout_constraintTop_toTopOf="@+id/bottomLayout"
@@ -64,6 +63,12 @@
         app:layout_constraintTop_toBottomOf="@+id/topLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical">
+        <Button
+            android:id="@+id/webViewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="웹뷰" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -74,6 +79,12 @@
                 android:layout_height="match_parent"/>
         </ScrollView>
     </LinearLayout>
+
+    <WebView
+        android:id="@+id/webView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
