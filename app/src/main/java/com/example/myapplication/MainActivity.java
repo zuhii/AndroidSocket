@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.icu.util.Output;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,11 +18,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.InputStreamReader;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -51,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     send(data);
+                    editText.setText("");
                 }
             }).start();
         });
@@ -74,13 +74,13 @@ public class MainActivity extends AppCompatActivity {
             int portNumber = 5001;
             Socket socket = new Socket("localhost", portNumber);
             printClientLog("소켓 연결됨");
-            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            outputStream.writeObject(data);
-            outputStream.flush();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            writer.write(data + "\n");
+            writer.flush();
             printClientLog("데이터 전송함");
 
-            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-            printClientLog("서버로부터 받음: " + inputStream.readObject());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            printClientLog("서버로부터 받음: " + reader.readLine());
             socket.close();
         }
         catch (Exception e) {
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             int portNumber = 5001;
 
             ServerSocket server = new ServerSocket(portNumber);
-            printServerLog("서버 시작함: " +portNumber);
+            printServerLog("서버 시작함: " + portNumber);
 
             while (true) {
                 Socket socket = server.accept();
@@ -101,16 +101,15 @@ public class MainActivity extends AppCompatActivity {
                 int clientPort = socket.getPort();
                 printServerLog("클라이언트 연결됨: " + clientHost + ":" + clientPort);
 
-                ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
-                Object obj = inputStream.readObject();
-                printServerLog("데이터 받음: " + obj);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String inputString = reader.readLine();
+                printServerLog("데이터 받음: " + inputString);
 
-                String message = String.valueOf(obj);
-                notification(message);
+                notification(inputString);
 
-                ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-                outputStream.writeObject(obj + " from server");
-                outputStream.flush();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                writer.write(inputString + " from server\n");
+                writer.flush();
                 printServerLog("데이터 보냄");
 
                 socket.close();
