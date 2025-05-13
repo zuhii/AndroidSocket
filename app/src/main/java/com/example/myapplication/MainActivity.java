@@ -6,9 +6,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,9 +29,9 @@ import java.net.Socket;
 public class MainActivity extends AppCompatActivity {
 
     EditText editText;
-
     TextView sendText;
     TextView serverText;
+    LinearLayout sendLayout;
 
     Handler handler = new Handler();
     @Override
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         editText = findViewById(R.id.editText);
         sendText = findViewById(R.id.sendText);
         serverText = findViewById(R.id.serverText);
+        sendLayout = findViewById(R.id.sendLayout);
 
         Button sendButton = findViewById(R.id.sendButton);
         sendButton.setOnClickListener(v -> {
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
                     startServer();
                 }
             }).start();
+
+            startButton.setVisibility(View.GONE);
+            sendLayout.setVisibility(View.VISIBLE);
         });
     }
 

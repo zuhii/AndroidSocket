@@ -14,16 +14,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/bottomLayout"
         android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
         <Button
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
+            android:id="@+id/startButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="전송" />
+            android:text="서버 시작" />
+
+        <LinearLayout
+            android:id="@+id/sendLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="전송" />
+
+        </LinearLayout>
+
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -37,7 +51,7 @@
 
         <View
             app:layout_constraintBottom_toBottomOf="@+id/topLayout"
-            app:layout_constraintTop_toTopOf="@+id/bottom"
+            app:layout_constraintTop_toTopOf="@+id/bottomLayout"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="#ff0000"/>
@@ -50,12 +64,6 @@
         app:layout_constraintTop_toBottomOf="@+id/topLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical">
-
-        <Button
-            android:id="@+id/startButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="서버 시작" />
 
         <ScrollView
             android:layout_width="match_parent"
