@@ -1,9 +1,12 @@
 package com.example.myapplication;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.icu.util.Output;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -15,7 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -38,6 +43,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if(ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS} ,1);
+            }
+        }
+
         editText = findViewById(R.id.editText);
         sendText = findViewById(R.id.sendText);
         serverText = findViewById(R.id.serverText);
@@ -50,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     send(data);
-                    editText.setText("");
                 }
             }).start();
         });
@@ -82,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             printClientLog("서버로부터 받음: " + reader.readLine());
             socket.close();
+
+            editText.setText("");
         }
         catch (Exception e) {
             e.printStackTrace();
